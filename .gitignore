@@ -20,5 +20,7 @@ plugins/cache/
 plugins/data/
 plugins/install-counts-cache.json
 
-# Project session logs (keep memory/, ignore conversation logs)
+# Project session logs and runtime artifacts
 projects/**/*.jsonl
+projects/**/tool-results/
+projects/**/subagents/
