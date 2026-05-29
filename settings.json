@@ -28,13 +28,22 @@
     "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name'); dir_full=$(echo \"$input\" | jq -r '.workspace.current_dir'); dir=$(basename \"$dir_full\"); branch=$(git -C \"$dir_full\" rev-parse --abbrev-ref HEAD 2>/dev/null); ctx=$(echo \"$input\" | jq -r '.context_window.used_percentage // empty'); five=$(echo \"$input\" | jq -r '.rate_limits.five_hour.used_percentage // empty'); week=$(echo \"$input\" | jq -r '.rate_limits.seven_day.used_percentage // empty'); YLW=$(printf '\\033[33m'); RED=$(printf '\\033[31m'); CYN=$(printf '\\033[36m'); GRN=$(printf '\\033[95m'); RST=$(printf '\\033[0m'); bar(){ p=$1; w=20; f=$((p*w/100)); e=$((w-f)); b=\"\"; i=0; while [ $i -lt $f ]; do b=\"${b}█\"; i=$((i+1)); done; i=0; while [ $i -lt $e ]; do b=\"${b}░\"; i=$((i+1)); done; if [ \"$p\" -ge 90 ]; then printf '%s%s %3d%%%s' \"$RED\" \"$b\" \"$p\" \"$RST\"; elif [ \"$p\" -ge 80 ]; then printf '%s%s %3d%%%s' \"$YLW\" \"$b\" \"$p\" \"$RST\"; else printf '%s %3d%%' \"$b\" \"$p\"; fi; }; if [ -n \"$branch\" ]; then echo \"$model | ${CYN}$dir${RST} (${GRN}$branch${RST})\"; else echo \"$model | ${CYN}$dir${RST}\"; fi; if [ -n \"$ctx\" ]; then p=$(printf '%.0f' \"$ctx\"); echo \"ctx  $(bar $p)\"; fi; if [ -n \"$five\" ]; then p=$(printf '%.0f' \"$five\"); echo \"5h   $(bar $p)\"; fi; if [ -n \"$week\" ]; then p=$(printf '%.0f' \"$week\"); echo \"7d   $(bar $p)\"; fi"
   },
   "enabledPlugins": {
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "planning-with-files@planning-with-files": true
+  },
+  "extraKnownMarketplaces": {
+    "planning-with-files": {
+      "source": {
+        "source": "github",
+        "repo": "OthmanAdi/planning-with-files"
+      }
+    }
   },
   "voice": {
     "enabled": true,
     "mode": "hold"
   },
   "theme": "auto",
-  "voiceEnabled": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "voiceEnabled": true
 }
