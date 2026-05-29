@@ -15,12 +15,8 @@ jobs/
 tasks/
 backups/
 
-# Plugin runtime caches
-plugins/cache/
-plugins/data/
-plugins/install-counts-cache.json
+# Plugins (managed by install, not manually edited)
+plugins/
 
-# Project session logs and runtime artifacts
-projects/**/*.jsonl
-projects/**/tool-results/
-projects/**/subagents/
+# Projects (session/runtime data)
+projects/
