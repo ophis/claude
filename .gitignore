@@ -18,8 +18,8 @@ backups/
 # Plugins (managed by install, not manually edited)
 plugins/
 
-# Skills - symlinks and untracked
-skills/dot-skill
+# Skills (manage separately)
+skills/
 
 # Projects (session/runtime data)
 projects/
