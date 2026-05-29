@@ -1,0 +1,24 @@
+# Runtime / session data
+history.jsonl
+.last-cleanup
+daemon.log
+daemon/
+sessions/
+session-env/
+shell-snapshots/
+file-history/
+image-cache/
+paste-cache/
+cache/
+downloads/
+jobs/
+tasks/
+backups/
+
+# Plugin runtime caches
+plugins/cache/
+plugins/data/
+plugins/install-counts-cache.json
+
+# Project session logs (keep memory/, ignore conversation logs)
+projects/**/*.jsonl
