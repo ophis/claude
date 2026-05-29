@@ -35,5 +35,6 @@
     "mode": "hold"
   },
   "theme": "auto",
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "agentPushNotifEnabled": true
 }
