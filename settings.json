@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "TTY=$(ps -p $PPID -o tty= | tr -d ' '); printf '\\e]9;Claude is waiting\\007' > /dev/$TTY"
+            "command": "TTY=$(ps -p $PPID -o tty= | tr -d ' '); [ -n \"$TTY\" ] && [ \"$TTY\" != '??' ] && printf '\\e]9;Claude is waiting\\007' > /dev/$TTY"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "TTY=$(ps -p $PPID -o tty= | tr -d ' '); printf '\\e]9;Claude needs approval\\007' > /dev/$TTY"
+            "command": "TTY=$(ps -p $PPID -o tty= | tr -d ' '); [ -n \"$TTY\" ] && [ \"$TTY\" != '??' ] && printf '\\e]9;Claude needs approval\\007' > /dev/$TTY"
           }
         ]
       }
