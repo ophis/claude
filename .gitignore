@@ -15,8 +15,9 @@ jobs/
 tasks/
 backups/
 
-# Plugins (managed by install, not manually edited)
-plugins/
+# Plugins (cache/data managed by install — only manifest is tracked)
+plugins/*
+!plugins/installed_plugins.json
 
 # Skills (manage separately — relationship skills are tracked explicitly)
 skills/*

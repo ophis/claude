@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "plugins": {
+    "superpowers@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/francis/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0",
+        "version": "5.1.0",
+        "installedAt": "2026-05-10T02:50:06.559Z",
+        "lastUpdated": "2026-05-10T02:50:06.559Z",
+        "gitCommitSha": "f2cbfbefebbfef77321e4c9abc9e949826bea9d7"
+      }
+    ],
+    "planning-with-files@planning-with-files": [
+      {
+        "scope": "user",
+        "installPath": "/Users/francis/.claude/plugins/cache/planning-with-files/planning-with-files/2.43.0",
+        "version": "2.43.0",
+        "installedAt": "2026-05-29T04:54:37.500Z",
+        "lastUpdated": "2026-05-29T04:54:37.500Z",
+        "gitCommitSha": "6f94643bd2b77dad9ac30b68ace14a536e2e5619"
+      }
+    ]
+  }
+}
