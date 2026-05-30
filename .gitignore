@@ -19,11 +19,9 @@ backups/
 plugins/
 
 # Skills (manage separately — relationship skills are tracked explicitly)
-skills/*
-!skills/relationship-liangsirui/
-!skills/relationship-wangziqian/
-!skills/relationship-zhoushiyun/
+skills/dot-skill
 
 # Projects (session/runtime data)
 projects/
 .last-update-result.json
+.DS_Store
