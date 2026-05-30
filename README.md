@@ -12,7 +12,7 @@ Personal [Claude Code](https://claude.ai/code) configuration, stored at `~/.clau
 └── skills/
     ├── relationship-liangsirui/         # 梁斯睿 — created with dot-skill
     ├── relationship-wangziqian/         # 王紫倩 — created with dot-skill
-    └── relationship-zhoushiyun/        # 周诗韵 — created with dot-skill
+    └── relationship-zhoushiyun/         # 周诗韵 — created with dot-skill
 ```
 
 Relationship skills are generated using [dot-skill / colleague-skill](https://github.com/titanwings/colleague-skill).
