@@ -18,8 +18,11 @@ backups/
 # Plugins (managed by install, not manually edited)
 plugins/
 
-# Skills (manage separately)
-skills/
+# Skills (manage separately — relationship skills are tracked explicitly)
+skills/*
+!skills/relationship-liangsirui/
+!skills/relationship-wangziqian/
+!skills/relationship-zhoushiyun/
 
 # Projects (session/runtime data)
 projects/

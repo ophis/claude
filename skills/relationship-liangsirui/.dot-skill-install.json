@@ -1,0 +1,10 @@
+{
+  "host": "claude-code",
+  "command_name": "relationship-liangsirui",
+  "character": "relationship",
+  "slug": "liangsirui",
+  "version": "v2",
+  "source_skill_dir": "skills/relationship/liangsirui",
+  "source_artifact": "SKILL.md",
+  "installed_at": "2026-05-12T01:59:38.294435+00:00"
+}

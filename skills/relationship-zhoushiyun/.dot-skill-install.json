@@ -1,0 +1,10 @@
+{
+  "host": "claude-code",
+  "command_name": "relationship-zhoushiyun",
+  "character": "relationship",
+  "slug": "zhoushiyun",
+  "version": "v1",
+  "source_skill_dir": "skills/relationship/zhoushiyun",
+  "source_artifact": "SKILL.md",
+  "installed_at": "2026-05-12T22:56:33.439717+00:00"
+}
