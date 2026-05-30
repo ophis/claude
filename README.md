@@ -8,8 +8,7 @@ Personal [Claude Code](https://claude.ai/code) configuration, stored at `~/.clau
 ~/.claude/
 ├── .claude/CLAUDE.md                    # Project-level instructions for Claude (repo-scoped, not global)
 ├── settings.json                        # Claude Code settings (hooks, plugins, theme, voice, status line)
-├── plugins/installed_plugins.json       # Installed plugin manifest
-├── .gitignore                           # Excludes runtime data, sessions, cache, plugin cache, most skills
+├── .gitignore                           # Excludes runtime data, sessions, cache, plugins, most skills
 └── skills/
     ├── relationship-liangsirui/         # 梁斯睿 — created with dot-skill
     ├── relationship-wangziqian/         # 王紫倩 — created with dot-skill

@@ -15,9 +15,8 @@ jobs/
 tasks/
 backups/
 
-# Plugins (cache/data managed by install — only manifest is tracked)
-plugins/*
-!plugins/installed_plugins.json
+# Plugins (cache/data/manifest all managed by install — intent lives in settings.json enabledPlugins)
+plugins/
 
 # Skills (manage separately — relationship skills are tracked explicitly)
 skills/*
