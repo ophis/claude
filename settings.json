@@ -45,5 +45,6 @@
   },
   "theme": "auto",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "model": "opus"
 }
