@@ -20,6 +20,26 @@
         "lastUpdated": "2026-05-29T04:54:37.500Z",
         "gitCommitSha": "6f94643bd2b77dad9ac30b68ace14a536e2e5619"
       }
+    ],
+    "ralph-loop@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "/Users/francis/.claude/plugins/cache/claude-plugins-official/ralph-loop/1.0.0",
+        "version": "1.0.0",
+        "installedAt": "2026-06-08T00:06:06.611Z",
+        "lastUpdated": "2026-06-08T00:06:06.611Z",
+        "gitCommitSha": "3d74b7e7a19eaccdf10ff9265faf24dbdeb9ea6d"
+      }
+    ],
+    "autopilot@claude-autopilot": [
+      {
+        "scope": "user",
+        "installPath": "/Users/francis/.claude/plugins/cache/claude-autopilot/autopilot/0.5.1",
+        "version": "0.5.1",
+        "installedAt": "2026-06-08T01:10:53.251Z",
+        "lastUpdated": "2026-06-08T16:38:05.612Z",
+        "gitCommitSha": "2ebdeb61385e145011f93aa3df0a3a17fd5896ec"
+      }
     ]
   }
 }
