@@ -34,11 +34,11 @@
     "autopilot@claude-autopilot": [
       {
         "scope": "user",
-        "installPath": "/Users/francis/.claude/plugins/cache/claude-autopilot/autopilot/0.5.1",
-        "version": "0.5.1",
+        "installPath": "/Users/francis/.claude/plugins/cache/claude-autopilot/autopilot/0.5.3",
+        "version": "0.5.3",
         "installedAt": "2026-06-08T01:10:53.251Z",
-        "lastUpdated": "2026-06-08T16:38:05.612Z",
-        "gitCommitSha": "2ebdeb61385e145011f93aa3df0a3a17fd5896ec"
+        "lastUpdated": "2026-06-09T04:38:20.355Z",
+        "gitCommitSha": "45fb43dace6262e3e661f47f55d0b218d0fd3cdc"
       }
     ]
   }

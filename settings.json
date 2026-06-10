@@ -24,6 +24,7 @@
       }
     ]
   },
+  "enableWorkflows": true,
   "statusLine": {
     "type": "command",
     "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name'); dir_full=$(echo \"$input\" | jq -r '.workspace.current_dir'); dir=$(basename \"$dir_full\"); branch=$(git -C \"$dir_full\" rev-parse --abbrev-ref HEAD 2>/dev/null); ctx=$(echo \"$input\" | jq -r '.context_window.used_percentage // empty'); tok=$(echo \"$input\" | jq -r '.context_window.total_input_tokens // empty'); five=$(echo \"$input\" | jq -r '.rate_limits.five_hour.used_percentage // empty'); week=$(echo \"$input\" | jq -r '.rate_limits.seven_day.used_percentage // empty'); YLW=$(printf '\\033[33m'); RED=$(printf '\\033[31m'); CYN=$(printf '\\033[36m'); GRN=$(printf '\\033[95m'); RST=$(printf '\\033[0m'); bar(){ p=$1; w=20; f=$((p*w/100)); e=$((w-f)); b=\"\"; i=0; while [ $i -lt $f ]; do b=\"${b}█\"; i=$((i+1)); done; i=0; while [ $i -lt $e ]; do b=\"${b}░\"; i=$((i+1)); done; if [ \"$p\" -ge 90 ]; then printf '%s%s %3d%%%s' \"$RED\" \"$b\" \"$p\" \"$RST\"; elif [ \"$p\" -ge 80 ]; then printf '%s%s %3d%%%s' \"$YLW\" \"$b\" \"$p\" \"$RST\"; else printf '%s %3d%%' \"$b\" \"$p\"; fi; }; if [ -n \"$branch\" ]; then echo \"$model | ${CYN}$dir${RST} (${GRN}$branch${RST})\"; else echo \"$model | ${CYN}$dir${RST}\"; fi; if [ -n \"$ctx\" ]; then p=$(printf '%.0f' \"$ctx\"); if [ -n \"$tok\" ] && [ \"$tok\" -gt 0 ]; then k=$(( (tok+500)/1000 )); echo \"ctx  $(bar $p) (${k}k)\"; else echo \"ctx  $(bar $p)\"; fi; fi; if [ -n \"$five\" ]; then p=$(printf '%.0f' \"$five\"); echo \"5h   $(bar $p)\"; fi; if [ -n \"$week\" ]; then p=$(printf '%.0f' \"$week\"); echo \"7d   $(bar $p)\"; fi",
@@ -49,11 +50,13 @@
       }
     }
   },
+  "effortLevel": "xhigh",
   "voice": {
     "enabled": true,
     "mode": "hold"
   },
   "theme": "auto",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "skipWorkflowUsageWarning": true
 }
