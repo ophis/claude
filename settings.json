@@ -1,17 +1,6 @@
 {
   "model": "opus",
   "hooks": {
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "TTY=$(ps -p $PPID -o tty= | tr -d ' '); [ -n \"$TTY\" ] && [ \"$TTY\" != '??' ] && printf '\\e]9;Claude is waiting\\007' > /dev/$TTY"
-          }
-        ]
-      }
-    ],
     "PermissionRequest": [
       {
         "matcher": "",
@@ -33,8 +22,10 @@
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "planning-with-files@planning-with-files": true,
-    "ralph-loop@claude-plugins-official": true,
-    "autopilot@claude-autopilot": true
+    "autopilot@claude-autopilot": true,
+    "caveman@caveman": true,
+    "ponytail@ponytail": true,
+    "security-guidance@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "planning-with-files": {
@@ -48,6 +39,18 @@
         "source": "git",
         "url": "https://github.com/ophis/claude-autopilot.git"
       }
+    },
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
     }
   },
   "effortLevel": "xhigh",
@@ -55,8 +58,8 @@
     "enabled": true,
     "mode": "hold"
   },
+  "skipWorkflowUsageWarning": true,
   "theme": "auto",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true,
-  "skipWorkflowUsageWarning": true
+  "voiceEnabled": true
 }
