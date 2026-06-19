@@ -21,9 +21,7 @@
   },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
-    "planning-with-files@planning-with-files": true,
     "autopilot@claude-autopilot": true,
-    "caveman@caveman": true,
     "ponytail@ponytail": true,
     "security-guidance@claude-plugins-official": true
   },
