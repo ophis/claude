@@ -22,8 +22,7 @@
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "autopilot@claude-autopilot": true,
-    "ponytail@ponytail": true,
-    "security-guidance@claude-plugins-official": true
+    "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {
     "planning-with-files": {
