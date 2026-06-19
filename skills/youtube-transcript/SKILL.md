@@ -23,13 +23,16 @@ uvx yt-dlp --print title --print description --print duration_string <url>
 ```
 `youtube-transcript-api` only returns captions, not metadata — `yt-dlp` fills that gap.
 
-## 3. No captions? → speech-to-text fallback (heavier)
-Only when step 1 reports captions are disabled. Pull the audio, then transcribe:
+## 3. No captions? → local speech-to-text fallback (heavier)
+Only when step 1 reports captions are disabled. Download the audio (`-f bestaudio` needs
+no ffmpeg), then transcribe **locally** with faster-whisper:
 ```
-uvx yt-dlp -x --audio-format mp3 -o /tmp/yt.%(ext)s <url>
-uvx --from openai-whisper whisper /tmp/yt.mp3 --model small --output_format txt --output_dir /tmp
+uvx yt-dlp -f bestaudio -o /tmp/yt.%(ext)s <url>      # yields /tmp/yt.m4a or /tmp/yt.webm
+uv run ~/.claude/skills/youtube-transcript/scripts/stt.py /tmp/yt.<ext> [lang]
 ```
-Heavy (downloads a model) — only worth it when there are genuinely no captions.
+- `faster-whisper` (CTranslate2, int8) — ~4–5× faster on CPU than `openai-whisper`.
+- First run downloads a ~480MB model to `~/.cache`; transcription is fully on-device, keyless.
+- `lang` is optional (auto-detected); pass e.g. `zh` to skip detection. Heavy — only when there are genuinely no captions.
 
 ## Notes
 - YouTube blocks datacenter IPs; running on a local/residential IP is most reliable.
