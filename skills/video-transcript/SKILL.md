@@ -15,21 +15,29 @@ uv run ~/.claude/skills/video-transcript/scripts/transcript.py <url> [lang]
 ```
 - **YouTube** → `youtube-transcript-api` (fast, keyless). Auto-falls back to whatever
   caption language exists, so non-English videos work **without passing `lang`**.
+- **Bilibili** → no caption route (yt-dlp 412s on its anti-crawl); prints the exact
+  audio+STT commands to run → step 2 (Bilibili branch).
 - **Other sites** (1800+ via yt-dlp) → downloads the site's subtitles. Pass `lang` to prefer one.
 - Prints plain text. Exits non-zero with a clean message when **no captions exist anywhere** → step 2.
 
 ## 2. No captions anywhere → local speech-to-text (heavier)
-Download the audio (`-f bestaudio` needs no ffmpeg; works on the same 1800+ sites), then transcribe **locally**:
+Download the audio, then transcribe **locally on the GPU**:
 ```
-uvx yt-dlp -f bestaudio -o /tmp/v.%(ext)s <url>        # yields /tmp/v.m4a or /tmp/v.webm
+uvx yt-dlp -f bestaudio -o '/tmp/v.%(ext)s' <url>     # quote the template (zsh globs %); yields /tmp/v.m4a|webm
 uv run ~/.claude/skills/video-transcript/scripts/stt.py /tmp/v.<ext> [lang]
 ```
-- `faster-whisper` (CTranslate2, int8), `small` model. First run downloads ~480MB to `~/.cache/huggingface`. Fully on-device, keyless.
-- `lang` optional (auto-detected); pass e.g. `zh` to skip detection. Heavy (model + a few min) — only when there are genuinely no captions.
+**Bilibili** (yt-dlp 412s — use the official-API helper instead, always outputs .m4a):
+```
+uv run ~/.claude/skills/video-transcript/scripts/bilibili.py audio <url> /tmp/v.m4a
+uv run ~/.claude/skills/video-transcript/scripts/stt.py /tmp/v.m4a [lang]
+```
+`bilibili.py meta <url>` prints title/duration/description (yt-dlp's `--print` also 412s).
+- `mlx-whisper` (Apple **MLX / Metal GPU**), `large-v3-turbo` model — **Apple Silicon only**; needs `ffmpeg` (`brew install ffmpeg`). First run downloads ~1.6GB to `~/.cache/huggingface`. Fully on-device, keyless.
+- `lang` optional (auto-detected); pass e.g. `zh` to skip detection. Heavy (model + a couple min) — only when there are genuinely no captions.
 
 ## 3. Metadata (title / description)
 ```
-uvx yt-dlp --print title --print description --print duration_string <url>
+uvx yt-dlp --print title --print description --print duration_string <url>   # Bilibili: use bilibili.py meta
 ```
 
 ## Notes

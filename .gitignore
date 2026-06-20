@@ -16,6 +16,7 @@ tasks/
 backups/
 ide/
 plans/
+security/
 telemetry/
 stats-cache.json
 

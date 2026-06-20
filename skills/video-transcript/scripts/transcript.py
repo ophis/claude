@@ -23,6 +23,10 @@ def is_youtube(url):
     return re.search(r"(?:youtube\.com|youtu\.be)", url) is not None
 
 
+def is_bilibili(url):
+    return "bilibili.com" in url or "b23.tv" in url
+
+
 def youtube_id(s):
     if re.fullmatch(r"[\w-]{11}", s):
         return s
@@ -81,6 +85,13 @@ def main():
             print(from_youtube(url, lang))
         except Exception as e:
             sys.exit(f"no YouTube captions: {type(e).__name__}: {e} -- fall back to stt.py")
+    elif is_bilibili(url):
+        # ponytail: yt-dlp 412s + public subs rare -> audio+STT via bilibili.py; add a sub fetch if ever needed
+        d = os.path.dirname(os.path.abspath(__file__))
+        lc = "" if lang == "en" else f" {lang}"
+        sys.exit("Bilibili: no caption route (yt-dlp 412s). Download audio + transcribe:\n"
+                 f"  uv run {d}/bilibili.py audio {url} /tmp/v.m4a\n"
+                 f"  uv run {d}/stt.py /tmp/v.m4a{lc}")
     else:
         text = from_yt_dlp(url, None if lang == "en" else lang)
         if text:
