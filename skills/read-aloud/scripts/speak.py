@@ -27,6 +27,7 @@ VOICE = "zf_xiaoxiao"  # zh: zf_xiaoxiao/zf_xiaoni/zf_xiaobei/zf_xiaoyi (f), zm_
 SPEED = 1.2            # 1.0 = default; >1 faster, <1 slower
 SPLIT = r"[。！？!?；;\n]+"  # split into sentences; without this Kokoro truncates long one-line text
 CHUNK_SECS = 6.0      # group sentences into ~this-long afplay chunks; fewer chunks = fewer inter-chunk gaps
+IDLE_SECS = float(os.environ.get("SPEAK_IDLE_SECS", "900"))  # server self-exits after this idle; next say respawns
 SELF = os.path.abspath(__file__)
 SOCK = os.path.join(os.path.dirname(SELF), ".speak.sock")  # next to this script, not hardcoded
 UV = shutil.which("uv") or "/opt/homebrew/bin/uv"
@@ -124,23 +125,43 @@ def write_wav(pipeline, text, out):
 
 
 def serve(initial=None):
-    """Resident server: load Kokoro once, play texts received over the unix socket (serialized)."""
+    """Resident server: load Kokoro once, play texts received over the unix socket (serialized).
+    A watchdog self-exits the process after IDLE_SECS with no playback, so the model doesn't sit in
+    memory forever; the next `say` just respawns it."""
     import queue
     import threading
+    import time
     pipeline = build_pipeline()  # torch + model loaded ONCE for the process lifetime
     jobs = queue.Queue()
+    state = {"active": time.time(), "busy": False}
 
     def worker():
         while True:
             t = jobs.get()
+            state["busy"] = True
             if t:
                 try:
                     play_stream(pipeline, t)
                 except Exception:
                     pass
+            state["busy"] = False
+            state["active"] = time.time()
     threading.Thread(target=worker, daemon=True).start()
+
+    def watchdog():
+        while True:
+            time.sleep(30)
+            if not state["busy"] and jobs.empty() and time.time() - state["active"] > IDLE_SECS:
+                try:
+                    os.remove(SOCK)
+                except OSError:
+                    pass
+                os._exit(0)  # free the model; next `say` respawns the server
+    threading.Thread(target=watchdog, daemon=True).start()
+
     if initial:
         jobs.put(initial)
+        state["active"] = time.time()
 
     try:
         os.remove(SOCK)  # clear a stale socket from a previous (dead) server
@@ -164,6 +185,7 @@ def serve(initial=None):
         t = buf.decode("utf-8", "replace").strip()
         if t:
             jobs.put(t)
+            state["active"] = time.time()
 
 
 def send(text):
