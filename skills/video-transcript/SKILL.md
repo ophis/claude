@@ -11,7 +11,7 @@ description: >-
 
 ## 1. Transcript (auto-routes by site)
 ```
-uv run ~/.claude/skills/video-transcript/scripts/transcript.py <url> [lang]
+uv run ${CLAUDE_SKILL_DIR}/scripts/transcript.py <url> [lang]
 ```
 - **YouTube** → `youtube-transcript-api` (fast, keyless). Auto-falls back to whatever
   caption language exists, so non-English videos work **without passing `lang`**.
@@ -24,12 +24,12 @@ uv run ~/.claude/skills/video-transcript/scripts/transcript.py <url> [lang]
 Download the audio, then transcribe **locally on the GPU**:
 ```
 uvx yt-dlp -f bestaudio -o '/tmp/v.%(ext)s' <url>     # quote the template (zsh globs %); yields /tmp/v.m4a|webm
-uv run ~/.claude/skills/video-transcript/scripts/stt.py /tmp/v.<ext> [lang]
+uv run ${CLAUDE_SKILL_DIR}/scripts/stt.py /tmp/v.<ext> [lang]
 ```
 **Bilibili** (yt-dlp 412s — use the official-API helper instead, always outputs .m4a):
 ```
-uv run ~/.claude/skills/video-transcript/scripts/bilibili.py audio <url> /tmp/v.m4a
-uv run ~/.claude/skills/video-transcript/scripts/stt.py /tmp/v.m4a [lang]
+uv run ${CLAUDE_SKILL_DIR}/scripts/bilibili.py audio <url> /tmp/v.m4a
+uv run ${CLAUDE_SKILL_DIR}/scripts/stt.py /tmp/v.m4a [lang]
 ```
 `bilibili.py meta <url>` prints title/duration/description (yt-dlp's `--print` also 412s).
 - `mlx-whisper` (Apple **MLX / Metal GPU**), `large-v3-turbo` model — **Apple Silicon only**; needs `ffmpeg` (`brew install ffmpeg`). First run downloads ~1.6GB to `~/.cache/huggingface`. Fully on-device, keyless.
