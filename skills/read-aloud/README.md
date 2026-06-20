@@ -21,6 +21,8 @@ sentence-by-sentence through a warm resident server. Usage is in `SKILL.md`; thi
 - The first `say` after a reboot spawns a resident server that loads the model once (~5–8 s); every call
   after that is instant, and audio **streams** as it synthesizes (starts after the first chunk, playing
   while the rest is still being made).
+- The server **self-exits after ~15 min idle** (frees the model from RAM); the next `say` respawns it.
+  Tune with the `SPEAK_IDLE_SECS` env var; stop it now with `pkill -f "speak.py serve"`.
 - Playback uses `afplay`, which renders to your current **default output device and follows it live** — so
   switching headphones/speakers, even mid-sentence, moves the audio over to the new device.
 - After editing `VOICE` / `SPEED`, reload the server: `pkill -f "speak.py serve"`.
