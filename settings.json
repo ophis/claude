@@ -57,6 +57,7 @@
   },
   "skipWorkflowUsageWarning": true,
   "theme": "auto",
+  "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "voiceEnabled": true
 }
