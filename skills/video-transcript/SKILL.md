@@ -14,8 +14,10 @@ allowed-tools: Bash(uv run:*), Bash(uvx:*)
 ```
 uv run ${CLAUDE_SKILL_DIR}/scripts/transcript.py "<url>" [lang]
 ```
-- **YouTube** → `youtube-transcript-api` (fast, keyless). Auto-falls back to whatever
-  caption language exists, so non-English videos work **without passing `lang`**.
+- **YouTube** → `youtube-transcript-api` (fast, keyless), then falls back to yt-dlp captions
+  (with `curl_cffi` impersonation). Auto-picks whatever caption language exists, so non-English
+  videos work **without passing `lang`**. If YouTube is rate-limiting the caption endpoint for your
+  IP (HTTP 429 on both routes — not a code bug, and cookies/impersonation don't bypass it), → step 2 (STT).
 - **Bilibili** → no caption route (yt-dlp 412s on its anti-crawl); prints the exact
   audio+STT commands to run → step 2 (Bilibili branch).
 - **Other sites** (1800+ via yt-dlp) → downloads the site's subtitles. Pass `lang` to prefer one.
@@ -24,13 +26,14 @@ uv run ${CLAUDE_SKILL_DIR}/scripts/transcript.py "<url>" [lang]
 ## 2. No captions anywhere → local speech-to-text (heavier)
 Download the audio, then transcribe **locally on the GPU**:
 ```
-uvx yt-dlp -f bestaudio -o '/tmp/v.%(ext)s' "<url>"     # quote the template (zsh globs %); yields /tmp/v.m4a|webm
-uv run ${CLAUDE_SKILL_DIR}/scripts/stt.py /tmp/v.<ext> [lang]
+uvx yt-dlp -f bestaudio -o '/tmp/vt_%(id)s.%(ext)s' --no-simulate --print after_move:filepath "<url>"
+# names the audio by video id and prints its exact path, e.g. /tmp/vt_<id>.webm — pass that path to stt.py
+uv run ${CLAUDE_SKILL_DIR}/scripts/stt.py /tmp/vt_<id>.<ext> [lang]
 ```
 **Bilibili** (yt-dlp 412s — use the official-API helper instead, always outputs .m4a):
 ```
-uv run ${CLAUDE_SKILL_DIR}/scripts/bilibili.py audio "<url>" /tmp/v.m4a
-uv run ${CLAUDE_SKILL_DIR}/scripts/stt.py /tmp/v.m4a [lang]
+uv run ${CLAUDE_SKILL_DIR}/scripts/bilibili.py audio "<url>"     # -> /tmp/vt_<BVID>.m4a (prints the path)
+uv run ${CLAUDE_SKILL_DIR}/scripts/stt.py /tmp/vt_<BVID>.m4a [lang]
 ```
 `bilibili.py meta "<url>"` prints title/duration/description (yt-dlp's `--print` also 412s).
 - `mlx-whisper` (Apple **MLX / Metal GPU**), `large-v3-turbo` model — **Apple Silicon only**; needs `ffmpeg` (`brew install ffmpeg`). First run downloads ~1.6GB to `~/.cache/huggingface`. Fully on-device, keyless.
@@ -42,6 +45,9 @@ uvx yt-dlp --print title --print description --print duration_string "<url>"   #
 ```
 
 ## Notes
+- **Audio naming convention**: downloaded audio is `/tmp/vt_<video-id>.<ext>` (YouTube id / Bilibili BVID).
+  Each file maps unambiguously to its source video, and parallel downloads of different videos never collide.
+  The download command **prints the exact path** — use that, don't guess the extension.
 - **Always quote the URL** (`"<url>"`) — zsh globs the `?` and `&` in YouTube/Bilibili URLs, so an
   unquoted link fails with `no matches found`.
 - YouTube blocks datacenter IPs; running on a local/residential IP is most reliable.

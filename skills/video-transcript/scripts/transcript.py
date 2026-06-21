@@ -65,8 +65,11 @@ def _vtt_to_text(path):
 def from_yt_dlp(url, lang):
     d = tempfile.mkdtemp()
     langs = (f"{lang}," if lang else "") + "en,zh,zh-Hans,zh-Hant"
+    # curl_cffi + --impersonate: YouTube 429s the caption/timedtext endpoint without a real browser TLS
+    # fingerprint. (A persistent 429 here is an IP-level rate limit; the caller then falls back to STT.)
     subprocess.run(
-        ["uvx", "yt-dlp", "--write-subs", "--write-auto-subs", "--sub-format", "vtt",
+        ["uvx", "--with", "curl_cffi", "yt-dlp", "--impersonate", "chrome",
+         "--write-subs", "--write-auto-subs", "--sub-format", "vtt",
          "--sub-langs", langs, "--skip-download", "-o", os.path.join(d, "sub"), url],
         capture_output=True, text=True,
     )
@@ -84,14 +87,20 @@ def main():
         try:
             print(from_youtube(url, lang))
         except Exception as e:
-            sys.exit(f"no YouTube captions: {type(e).__name__}: {e} -- fall back to stt.py")
+            text = from_yt_dlp(url, None if lang == "en" else lang)  # yt-dlp + impersonation: more robust than the api
+            if text:
+                print(text)
+            else:
+                sys.exit(f"no YouTube captions ({type(e).__name__}); yt-dlp caption fetch also failed "
+                         "(YouTube 429s the timedtext endpoint for this IP) -- fall back to stt.py")
     elif is_bilibili(url):
         # ponytail: yt-dlp 412s + public subs rare -> audio+STT via bilibili.py; add a sub fetch if ever needed
         d = os.path.dirname(os.path.abspath(__file__))
         lc = "" if lang == "en" else f" {lang}"
-        sys.exit("Bilibili: no caption route (yt-dlp 412s). Download audio + transcribe:\n"
-                 f"  uv run {d}/bilibili.py audio {url} /tmp/v.m4a\n"
-                 f"  uv run {d}/stt.py /tmp/v.m4a{lc}")
+        sys.exit("Bilibili: no caption route (yt-dlp 412s). Download audio + transcribe "
+                 "(audio is named /tmp/vt_<BVID>.m4a; the first command prints the exact path):\n"
+                 f'  uv run {d}/bilibili.py audio "{url}"\n'
+                 f"  uv run {d}/stt.py /tmp/vt_<BVID>.m4a{lc}")
     else:
         text = from_yt_dlp(url, None if lang == "en" else lang)
         if text:

@@ -19,6 +19,7 @@ plans/
 security/
 telemetry/
 stats-cache.json
+__pycache__/
 
 # Plugins (cache/data/manifest all managed by install — intent lives in settings.json enabledPlugins)
 plugins/

@@ -13,8 +13,11 @@ Speak text through the local Kokoro server — fast, offline, no API key:
 ```
 python3 ${CLAUDE_SKILL_DIR}/scripts/speak.py say "要念的文本"
 echo "$text" | python3 ${CLAUDE_SKILL_DIR}/scripts/speak.py say   # long / multiline: pipe via stdin
+python3 ${CLAUDE_SKILL_DIR}/scripts/speak.py stop                 # interrupt: stop now, drop the rest
 ```
 - **Fire-and-forget:** returns instantly; audio plays async, streamed sentence-by-sentence.
+- **Interrupt:** `… speak.py stop` aborts the current read and clears anything queued, keeping the
+  server warm (instant next `say`). Use it when the user says 停 / 别念了 / stop mid-playback.
 - First call after a reboot spawns the server (~5–8s model load); after that it's warm/instant.
 - Voice/speed: edit `VOICE` / `SPEED` atop `speak.py`, then `pkill -f "speak.py serve"` to reload.
 

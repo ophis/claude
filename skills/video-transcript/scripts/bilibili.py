@@ -5,7 +5,7 @@
 """Bilibili helper. yt-dlp 412s on Bilibili's anti-crawl, so use the web API directly.
 
   meta  <url>            -> print title / duration(s) / description
-  audio <url> [out.m4a]  -> download best audio track (default /tmp/v.m4a), print path
+  audio <url> [out.m4a]  -> download best audio track (default /tmp/vt_<BVID>.m4a), print path
 
 Chain (the 412 fix): a Session GETs the homepage to receive a fresh anonymous buvid3
 cookie, then hits the login-free official endpoints (cookie auto-resent) with UA + Referer:
@@ -66,7 +66,7 @@ def main():
         print(f"duration: {info['duration']}s")
         print(info.get("desc", ""))
     else:
-        out = sys.argv[3] if len(sys.argv) > 3 else "/tmp/v.m4a"
+        out = sys.argv[3] if len(sys.argv) > 3 else f"/tmp/vt_{info['bvid']}.m4a"  # name by BVID -> audio maps to video
         with s.get(audio_url(s, info["bvid"], info["cid"]), stream=True) as r, open(out, "wb") as f:
             for chunk in r.iter_content(1 << 20):
                 f.write(chunk)

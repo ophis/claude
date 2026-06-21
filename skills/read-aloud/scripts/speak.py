@@ -59,7 +59,7 @@ def _seg_audio(r):
     return np.asarray(a, dtype="float32")
 
 
-def play_stream(pipeline, text):
+def play_stream(pipeline, text, cancel=None):
     """Streaming via afplay, chunked. A producer thread synthesizes + trims each sentence and groups them
     into ~CHUNK_SECS-long temp wavs; the main thread plays the chunks in order with afplay. Each chunk is
     trimmed flush at BOTH edges (no leading/trailing silence), so the only thing between two chunks is the
@@ -68,6 +68,7 @@ def play_stream(pipeline, text):
     audio starts after the first chunk (plays while the rest synthesizes)."""
     import queue
     import threading
+    import time
     import numpy as np
     import soundfile as sf
     q = queue.Queue(maxsize=3)
@@ -88,6 +89,8 @@ def play_stream(pipeline, text):
     def produce():
         segs, secs, n = [], 0.0, 0
         for r in pipeline(text, voice=VOICE, speed=SPEED, split_pattern=SPLIT):
+            if cancel and cancel.is_set():
+                break                      # stop synthesizing the rest on interrupt
             a = _seg_audio(r)
             if a is None:
                 continue
@@ -100,7 +103,8 @@ def play_stream(pipeline, text):
                 emit(segs, n)
                 n += 1
                 segs, secs = [], 0.0
-        emit(segs, n)
+        if not (cancel and cancel.is_set()):
+            emit(segs, n)
         q.put(None)
 
     threading.Thread(target=produce, daemon=True).start()
@@ -108,7 +112,13 @@ def play_stream(pipeline, text):
         p = q.get()
         if p is None:
             break
-        subprocess.run(["afplay", p])  # afplay tracks the default output device, even mid-playback
+        if not (cancel and cancel.is_set()):
+            proc = subprocess.Popen(["afplay", p])  # afplay tracks the default output device, even mid-playback
+            while proc.poll() is None:
+                if cancel and cancel.is_set():
+                    proc.terminate()       # stop now; remaining queued chunks are dropped unplayed
+                    break
+                time.sleep(0.05)
         try:
             os.remove(p)
         except OSError:
@@ -133,15 +143,17 @@ def serve(initial=None):
     import time
     pipeline = build_pipeline()  # torch + model loaded ONCE for the process lifetime
     jobs = queue.Queue()
+    cancel = threading.Event()  # set by a `stop` message; aborts the playing job + drains the queue
     state = {"active": time.time(), "busy": False}
 
     def worker():
         while True:
             t = jobs.get()
+            cancel.clear()  # fresh job: forget any prior stop
             state["busy"] = True
             if t:
                 try:
-                    play_stream(pipeline, t)
+                    play_stream(pipeline, t, cancel)
                 except Exception:
                     pass
             state["busy"] = False
@@ -182,6 +194,14 @@ def serve(initial=None):
                 break
             buf += chunk
         conn.close()
+        if buf == b"\x00STOP":  # interrupt: abort current playback + clear pending jobs
+            cancel.set()
+            try:
+                while True:
+                    jobs.get_nowait()
+            except queue.Empty:
+                pass
+            continue
         t = buf.decode("utf-8", "replace").strip()
         if t:
             jobs.put(t)
@@ -203,9 +223,23 @@ def send(text):
                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
 
 
+def stop():
+    """Tell the running server to interrupt: kill current playback + drop queued text. Keeps the model warm."""
+    try:
+        c = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        c.settimeout(1.0)
+        c.connect(SOCK)
+        c.sendall(b"\x00STOP")
+        c.close()
+    except OSError:
+        pass  # no server up -> nothing to stop
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "serve":      # resident server
         serve(sys.argv[2] if len(sys.argv) > 2 else None)
+    elif len(sys.argv) > 1 and sys.argv[1] == "stop":     # interrupt playback, keep the server warm
+        stop()
     elif len(sys.argv) > 1 and sys.argv[1] == "say":      # speak text via the warm server (argv or stdin)
         t = sys.argv[2] if len(sys.argv) > 2 else sys.stdin.read()
         if t.strip():
@@ -217,4 +251,4 @@ if __name__ == "__main__":
         else:
             play_stream(pipe, sys.argv[1])
     else:
-        sys.exit('usage: speak.py say "文本" | serve | "文本" [out.wav]')
+        sys.exit('usage: speak.py say "文本" | stop | serve | "文本" [out.wav]')
