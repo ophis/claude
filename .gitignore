@@ -21,8 +21,9 @@ telemetry/
 stats-cache.json
 __pycache__/
 
-# Plugins (cache/data/manifest all managed by install — intent lives in settings.json enabledPlugins)
-plugins/
+# Plugins (cache/data/manifest managed by install — track only installed_plugins.json)
+plugins/*
+!plugins/installed_plugins.json
 
 # Skills (manage separately — relationship skills are tracked explicitly)
 skills/dot-skill
