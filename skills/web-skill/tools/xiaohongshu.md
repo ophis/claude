@@ -21,6 +21,9 @@ Avoid `xhs login --qrcode` unless cookie extraction is impossible — it downloa
 ~600 MB Camoufox browser on first use and has been unreliable.
 
 ## Read
+**Search in Chinese.** XHS is a Chinese platform — query with Chinese keywords
+(e.g. `美食`, not `food`); English terms return little or nothing. Translate the
+user's intent to Chinese before searching.
 ```
 xhs search <keyword>            # --sort popular  --type video
 xhs read <id|url|index>         # note content
@@ -29,11 +32,25 @@ xhs user <user_id>              # profile;  xhs user-posts <user_id> for their n
 xhs hot -c <category>           # trending: fashion food cosmetics movie career love home gaming travel fitness
 xhs feed                        # recommendation feed
 ```
-Short index: after a `search`, `xhs read 1` / `xhs comments 1` reuse result #1.
+**Never read a bare note_id.** XHS requires an `xsec_token` bound to the note, so a
+raw id 404s/empties. Always `search`/`feed`/`hot` first, then read a *result* — by
+its short index (`xhs read 1`) or its full URL/ID from the results (which carry the
+token). Same rule for every backend.
 
-## Disabled — never run these
-This tool is **read-only**. It must NOT publish, delete, or alter content:
-`xhs comment`, `xhs reply`, `xhs post`, `xhs delete`, `xhs delete-comment`.
+## Read the images — content is often IN the pictures, not the caption
+XHS is image-first: price boards (价格表), specs, and key details are frequently
+only in a note's photos. After `xhs read`, fetch and view the images yourself:
+```
+xhs read <id|index> --json        # → .data.items[0].note_card.image_list[].url_default
+curl -s -o /tmp/xhs.webp "<url_default>"          # xhscdn URLs need no auth/Referer
+sips -s format png /tmp/xhs.webp --out /tmp/xhs.png   # WebP → PNG, then view it
+```
+`xhs` itself can't download/OCR images — it only returns the URLs.
+
+## Disabled — read-only tool
+Never publish, delete, or alter content: `xhs comment`, `xhs reply`, `xhs post`,
+`xhs delete`, `xhs delete-comment`. (xhs-cli v0.6.x write ops also tend to fail with
+a 406 signature error anyway — read-only is both the policy and the reliable path.)
 
 ## Engagement — not auto-permitted; ask the user first
 ```
@@ -42,9 +59,10 @@ xhs follow <user_id>
 ```
 
 ## Notes
-- **Do NOT parallelize** `xhs` calls — it has a built-in rate-limit delay for account safety.
+- **Pace requests: wait 2–3s between calls, never parallelize.** Bursty use (batch
+  search, deep comment paging) trips a captcha the platform won't let you bypass.
 - Captcha / IP-block: ask the user to resolve it in the browser, then retry.
 - Full command list: `xhs --help` (the package ships its own detailed skill doc).
-- Limits: no image/video download, no DMs, single account at a time.
-- Install (auto-done by `scripts/install.sh`): `uv tool install xiaohongshu-cli`;
+- Limits: no DMs, single account; the CLI won't download media (but image URLs are fetchable — see above).
+- Install (auto-done by `web-skill install`): `uv tool install xiaohongshu-cli`;
   upgrade with `uv tool upgrade xiaohongshu-cli` to avoid upstream API drift.
