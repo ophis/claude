@@ -1,5 +1,5 @@
 ---
-name: gws
+name: google-workspace
 description: >-
   Google Workspace from the command line via the `gws` CLI — Gmail, Drive, Docs,
   Sheets, Slides, Calendar, Chat, Tasks, and more. Use for sending/reading email,

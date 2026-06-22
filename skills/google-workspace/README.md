@@ -1,4 +1,4 @@
-# gws skill — notes
+# google-workspace skill — notes
 
 Companion to `SKILL.md`. The skill body covers day-to-day usage; this file
 covers setup details, mainly **multi-account switching**.
