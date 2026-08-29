@@ -4,21 +4,21 @@
     "superpowers@claude-plugins-official": [
       {
         "scope": "user",
-        "installPath": "/Users/francis/.claude/plugins/cache/claude-plugins-official/superpowers/6.0.3",
-        "version": "6.0.3",
+        "installPath": "/Users/francis/.claude/plugins/cache/claude-plugins-official/superpowers/6.3.0",
+        "version": "6.3.0",
         "installedAt": "2026-05-10T02:50:06.559Z",
-        "lastUpdated": "2026-06-19T03:31:57.370Z",
+        "lastUpdated": "2026-08-13T01:17:25.301Z",
         "gitCommitSha": "f2cbfbefebbfef77321e4c9abc9e949826bea9d7"
       }
     ],
     "autopilot@claude-autopilot": [
       {
         "scope": "user",
-        "installPath": "/Users/francis/.claude/plugins/cache/claude-autopilot/autopilot/0.9.4",
-        "version": "0.9.4",
+        "installPath": "/Users/francis/.claude/plugins/cache/claude-autopilot/autopilot/0.9.5",
+        "version": "0.9.5",
         "installedAt": "2026-06-08T01:10:53.251Z",
-        "lastUpdated": "2026-06-15T23:37:46.652Z",
-        "gitCommitSha": "0cf164157aee1331bbef16541d34494c9e4918d3"
+        "lastUpdated": "2026-06-28T03:33:11.550Z",
+        "gitCommitSha": "aa28392c44adfb377c9d4f684e3f31d8be8e84cc"
       }
     ],
     "ponytail@ponytail": [
