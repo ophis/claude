@@ -11,6 +11,7 @@ image-cache/
 paste-cache/
 cache/
 downloads/
+uploads/
 jobs/
 tasks/
 backups/
@@ -27,6 +28,8 @@ plugins/*
 
 # Skills (manage separately — relationship skills are tracked explicitly)
 skills/dot-skill
+skills/synced/
+skills/.trash/
 
 # Projects (session/runtime data)
 projects/
