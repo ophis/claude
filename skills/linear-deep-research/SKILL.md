@@ -21,7 +21,7 @@ Turns one Deep Research issue into a verified report attached to that issue. Res
 4. **Claim.** Re-read the status right before claiming. Not Todo anymore → another session has it; stop. Otherwise set In Progress, assignee `me`, and comment that research started.
 5. **Research.** One `deep-research` run covers one focused question: it verifies only its top-ranked claims and silently drops the rest. If the issue has several independent parts, launch one run per part in parallel. Each run's `args` is one self-contained question string: the part's question, the shared context, and any "already known" claims for that part phrased as claims to verify. Each run costs ~100 agents / ~4M tokens; if more than 3 runs are needed, confirm with the user first.
 6. **Failed runs.** Retry a run once if its error looks transient. If some parts still have no verified findings, publish the report anyway and list those parts under Gaps. If every run failed, comment the failure, move the issue back to Todo, and stop.
-7. **Report.** `save_document` with `issue` as the only parent (not `project` too), title `Report: <issue title>`, in the issue's language:
+7. **Report.** `save_document` with `issue` as the only parent (not `project` too), title `Report: <issue title>`. Write the report in Chinese; on first mention, follow each proper noun or acronym with its English original in parentheses, e.g. 工作树（git worktree）. Sections:
    - Answer and recommendation (one paragraph)
    - Comparison table, when the deliverable asks for one
    - Findings per part, each with its confidence and sources
