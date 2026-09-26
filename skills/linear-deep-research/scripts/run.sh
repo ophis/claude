@@ -5,6 +5,8 @@
 set -euo pipefail
 
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
+# claude -p kills background workflows after 10 idle minutes by default; a research run takes longer.
+export CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=3600000
 SESSION=linear-research
 STATE="$HOME/.local/state/linear-research"
 mkdir -p "$STATE/work"
