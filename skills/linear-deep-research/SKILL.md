@@ -15,7 +15,7 @@ Turns one Deep Research issue into a verified report attached to that issue. Res
 
 ## Steps
 
-1. **Pick.** Use the issue the user named. Otherwise take the Todo issue in the project with the highest priority (none = lowest), oldest first. Empty queue → tell the user and stop.
+1. **Pick.** Use the issue the user named. Otherwise take the Todo issue in the project with the highest priority (none = lowest), oldest first. Empty queue → stop.
 2. **Read** the issue and its comments.
 3. **Too vague?** If the question, scope or deliverable is missing, comment 2–4 numbered questions, move the issue to Backlog, and stop.
 4. **Claim.** Re-read the status right before claiming. Not Todo anymore → another session has it; stop. Otherwise set In Progress, assignee `me`, and comment that research started.
