@@ -15,6 +15,7 @@ Turns one Deep Research issue into a verified report attached to that issue. Res
 
 ## Steps
 
+0. **Recover.** Only one run exists at a time, so an In Progress issue in the project assigned to `me` and not updated for over 2 hours is left over from a run that died. For each: comment that the previous run was interrupted and the issue is back in the queue, set Todo, remove the assignee.
 1. **Pick.** Use the issue the user named. Otherwise take the Todo issue in the project with the highest priority (none = lowest), oldest first. Empty queue → stop.
 2. **Read** the issue and its comments.
 3. **Too vague?** If the question, scope or deliverable is missing, comment 2–4 numbered questions, move the issue to Backlog, and stop.
