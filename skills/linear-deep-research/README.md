@@ -1,6 +1,6 @@
 # linear-deep-research
 
-Runs the Deep Research queue on the Linear board (team Frank's Agents, project Deep Research): picks the next Todo issue, runs `/deep-research` once, and attaches the report to the issue.
+Runs the Deep Research queue on the Linear board (team Frank's Agents, project Deep Research): picks the next Todo issue, runs `/deep-research` once, and files the report under the project with a link on the issue.
 
 - `SKILL.md` — the procedure Claude follows.
 - `scripts/run.sh` — headless runner: `claude -p` in a detached tmux session `linear-research`, one run at a time, logs to `~/.local/state/linear-research/`.

@@ -20,13 +20,13 @@ Turns one Deep Research issue into a verified report attached to that issue. Res
 2. **Read** the issue and its comments.
 3. **Too vague?** If the question, scope or deliverable is missing, comment 2–4 numbered questions, move the issue to Backlog, and stop.
 4. **Claim.** Re-read the status right before claiming. Not Todo anymore → another session has it; stop. Otherwise set In Progress, assignee `me`, and comment that research started.
-5. **Research.** One `deep-research` run covers one focused question: it verifies only its top-ranked claims and silently drops the rest. If the issue has several independent parts, launch one run per part in parallel. Each run's `args` is one self-contained question string: the part's question, the shared context, and any "already known" claims for that part phrased as claims to verify. Each run costs ~100 agents / ~4M tokens; if more than 3 runs are needed, confirm with the user first.
-6. **Failed runs.** Retry a run once if its error looks transient. If some parts still have no verified findings, publish the report anyway and list those parts under Gaps. If every run failed, comment the failure, move the issue back to Todo, and stop.
-7. **Report.** `save_document` with `issue` as the only parent (not `project` too), title `Report: <issue title>`. Write the report in Chinese; on first mention, follow each proper noun or acronym with its English original in parentheses, e.g. 工作树（git worktree）. Sections:
+5. **Research.** Call the built-in `/deep-research` Workflow exactly once for the whole issue in this invocation. Combine all subquestions, shared context, and any "already known" claims into one self-contained `args` string; phrase existing claims as claims to verify and prioritize the questions most important to the deliverable. Do not launch separate runs for individual parts or additional runs to fill coverage gaps. The workflow verifies only its top-ranked claims, so list uncovered or unverified parts under Gaps.
+6. **Failed or partial run.** Do not automatically retry or launch a replacement research run in this invocation. If the run produces usable findings, including supported refutations, publish the report and list missing or unverified parts under Gaps. If it fails and yields no usable findings, comment the failure, move the issue back to Todo, and stop.
+7. **Report.** `save_document` with `project` `Deep Research` as the only parent (not `issue` too), title `Report: <issue ID> <issue title>`, so all reports list on the project page. Then add the document URL to the issue's links with `save_issue` `links`. Write the report in Chinese; on first mention, follow each proper noun or acronym with its English original in parentheses, e.g. 工作树（git worktree）. Sections:
    - Answer and recommendation (one paragraph)
    - Comparison table, when the deliverable asks for one
    - Findings per part, each with its confidence and sources
    - Corrections to anything the issue listed as already known
-   - Gaps: parts no run verified, refuted claims, open questions
-   Present unverified or single-source points as such, never as fact. The recommendation and comparison table are your synthesis across runs; say so.
+   - Gaps: unverified parts, refuted claims, open questions
+   Present unverified or single-source points as such, never as fact. The recommendation and comparison table are your synthesis of findings from the single run; say so.
 8. **Hand off.** Comment a 3–5 line summary plus the document link, set In Review, and reply to the user with the link. Handle one issue per invocation.
