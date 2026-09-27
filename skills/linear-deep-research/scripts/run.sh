@@ -9,7 +9,7 @@ export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin"
 export CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=3600000
 DIR="$(cd "$(dirname "$0")" && pwd)"
 SESSION=linear-research
-STATE="$HOME/.local/state/linear-research"
+STATE="$HOME/playground/linear-research"
 mkdir -p "$STATE/work"
 
 MAX_5H=0.30
