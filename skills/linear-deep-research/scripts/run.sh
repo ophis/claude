@@ -12,13 +12,39 @@ SESSION=linear-research
 STATE="$HOME/.local/state/linear-research"
 mkdir -p "$STATE/work"
 
+MAX_5H=0.30
+
+# 5-hour window utilization (0-1), read from the rate-limit events of one tiny Haiku call; empty if unavailable.
+five_hour_usage() {
+  (cd "$STATE/work" && claude -p "Reply with OK." --model haiku --output-format stream-json --verbose < /dev/null 2>/dev/null) |
+    python3 -c '
+import json, sys
+last = ""
+for line in sys.stdin:
+    try:
+        m = json.loads(line)
+    except ValueError:
+        continue
+    if m.get("type") == "rate_limit_event":
+        last = m["rate_limit_info"].get("unifiedWindows", {}).get("five_hour", {}).get("utilization", last)
+print(last)'
+}
+
+USAGE=$(five_hour_usage)
+
 if [[ "${1:-}" == "--dry-run" ]]; then
+  echo "5h usage: ${USAGE:-unknown} (runs only below $MAX_5H)" >&2
   exec python3 "$DIR/pick.py" --dry-run
 fi
 
 # Checked before pick.py: Recover assumes no run is active.
 if tmux has-session -t "$SESSION" 2>/dev/null; then
   echo "$(date '+%F %T') skip: previous run still active" >> "$STATE/runs.log"
+  exit 0
+fi
+
+if [[ -z "$USAGE" ]] || ! python3 -c "import sys; sys.exit(0 if $USAGE < $MAX_5H else 1)"; then
+  echo "$(date '+%F %T') skip: 5h usage ${USAGE:-unknown} not below $MAX_5H" >> "$STATE/runs.log"
   exit 0
 fi
 
