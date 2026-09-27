@@ -1,7 +1,7 @@
 #!/bin/bash
 # One runner tick: resumes an interrupted Deep Research run or claims the next Todo issue (pick.py)
 # and hands it to the linear-deep-research skill in a detached tmux session.
-# --now skips the 23:00-06:59 hours check. --dry-run changes nothing, starts no run, and prints
+# --now skips the 01:00-06:59 hours check. --dry-run changes nothing, starts no run, and prints
 # pick.py's plan and the usage probe.
 set -euo pipefail
 
@@ -28,7 +28,7 @@ skip() {
 }
 
 HOUR=$(date +%H)
-if [[ -z "$NOW" ]] && (( 10#$HOUR < 23 && 10#$HOUR > 6 )); then
+if [[ -z "$NOW" ]] && (( 10#$HOUR < 1 || 10#$HOUR > 6 )); then
   skip "outside hours"
   [[ -n "$DRY" ]] || exit 0
 fi
