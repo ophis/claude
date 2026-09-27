@@ -56,8 +56,9 @@ fi
 read -r ISSUE URL <<< "$PICKED"
 
 PROMPT="Use the linear-deep-research skill to handle $ISSUE ($URL). The runner has already claimed it."
-LOG="$STATE/$(date +%Y%m%d-%H%M%S)-$ISSUE.jsonl"
-echo "$(date '+%F %T') start $ISSUE log=$LOG" >> "$STATE/runs.log"
+SID=$(uuidgen | tr 'A-Z' 'a-z')
+TRANSCRIPT="$HOME/.claude/projects/$(echo "$STATE/work" | tr '/.' '--')/$SID.jsonl"
+echo "$(date '+%F %T') start $ISSUE session=$SID transcript=$TRANSCRIPT" >> "$STATE/runs.log"
 
 tmux new-session -d -s "$SESSION" -c "$STATE/work" \
-  "claude -p $(printf '%q' "$PROMPT") --model opus --effort xhigh --permission-mode auto --output-format stream-json --verbose < /dev/null | tee $(printf '%q' "$LOG")"
+  "claude -p $(printf '%q' "$PROMPT") --session-id $SID --model opus --effort xhigh --permission-mode auto < /dev/null"
