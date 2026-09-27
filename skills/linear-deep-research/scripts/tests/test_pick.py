@@ -131,12 +131,14 @@ class Gate(unittest.TestCase):
         self.assertEqual(pick.gate("new", ['{"type":"system"}', "garbage"]), (False, "no rate_limit_event"))
 
     def test_new(self):
-        self.assertTrue(self.ok("new", event(five=0.29)))
-        self.assertFalse(self.ok("new", event(five=0.30)))
+        self.assertTrue(self.ok("new", event(five=0.89)))
+        self.assertFalse(self.ok("new", event(five=0.9)))
+        self.assertFalse(self.ok("new", event(status="rejected", five=0.1)))
+        self.assertFalse(self.ok("new", event(five=0.1, seven_day=1.0)))
 
     def test_resume(self):
-        self.assertTrue(self.ok("resume", event(five=0.79, seven_day=0.99, seven_day_opus=0.5)))
-        self.assertFalse(self.ok("resume", event(five=0.8)))
+        self.assertTrue(self.ok("resume", event(five=0.89, seven_day=0.99, seven_day_opus=0.5)))
+        self.assertFalse(self.ok("resume", event(five=0.9)))
         self.assertFalse(self.ok("resume", event(status="rejected", five=0.1)))
         self.assertFalse(self.ok("resume", event(five=0.1, seven_day=0.2, seven_day_opus=1.0)))
         self.assertTrue(self.ok("resume", event(status="allowed_warning", five=0.5)))

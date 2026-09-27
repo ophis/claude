@@ -99,9 +99,10 @@ class Dispatcher(unittest.TestCase):
         self.assertEqual(self.calls("pick"), [])
 
     def test_hours_boundaries(self):
-        for hour in ("23", "06"):
+        for hour in ("01", "06"):
             self.tick(FAKE_HOUR=hour)
-        self.tick(FAKE_HOUR="07")
+        for hour in ("00", "07", "23"):
+            self.tick(FAKE_HOUR=hour)
         self.assertEqual(len(self.calls("pick")), 2)
 
     def test_now_skips_only_hours(self):
@@ -141,7 +142,7 @@ class Dispatcher(unittest.TestCase):
         self.assertNotIn("--claim", " ".join(self.calls("pick")))
 
     def test_resume_blocked(self):
-        for text in (probe(0.8), probe(0.1, status="rejected"), probe(0.1, seven=1.0)):
+        for text in (probe(0.9), probe(0.1, status="rejected"), probe(0.1, seven=1.0)):
             self.set_probe(text)
             self.tick(FAKE_PLAN=f"resume TASK-8 {SID} 1 https://l/TASK-8")
         self.assertEqual(self.runs_log().count("skip: resume blocked by usage"), 3)
@@ -160,7 +161,7 @@ class Dispatcher(unittest.TestCase):
         self.assertIn(f"new-session -d -s linear-research -c {self.home}/playground/linear-research/work", self.calls("tmux")[-1])
 
     def test_new_blocked(self):
-        self.set_probe(probe(0.3))
+        self.set_probe(probe(0.9))
         self.tick(FAKE_PLAN="new", FAKE_CLAIM="TASK-9 https://l/TASK-9")
         self.assertIn("skip: new blocked by usage", self.runs_log())
         self.assertNotIn("--claim", " ".join(self.calls("pick")))

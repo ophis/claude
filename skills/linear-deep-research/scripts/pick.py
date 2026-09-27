@@ -22,6 +22,7 @@ STALE = timedelta(hours=2)
 LIVE = timedelta(minutes=30)
 CAP = 4
 MAX_RESUMES = 2
+MAX_5H = 0.9
 CAP_COMMENT = "Tried 4 times without finishing; needs a look."
 RUNS_LOG = os.path.expanduser("~/playground/linear-research/runs.log")
 TRANSCRIPTS = os.path.expanduser("~/.claude/projects/-Users-francis-playground-linear-research-work")
@@ -109,9 +110,7 @@ def gate(kind, lines):
     summary = " ".join([f"status={info.get('status')}", f"five_hour={five}"] + [f"{k}={v}" for k, v in sorted(week.items())])
     if five is None:
         return False, summary
-    if kind == "new":
-        return five < 0.30, summary
-    ok = info.get("status") != "rejected" and five < 0.8 and all(v is None or v < 1 for v in week.values())
+    ok = info.get("status") != "rejected" and five < MAX_5H and all(v is None or v < 1 for v in week.values())
     return ok, summary
 
 
