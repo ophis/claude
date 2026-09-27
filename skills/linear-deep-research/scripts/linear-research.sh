@@ -39,6 +39,11 @@ if tmux has-session -t "$SESSION" 2>/dev/null; then
   [[ -n "$DRY" ]] || exit 0
 fi
 
+# stderr stays out of runs.log: --prune replaces the file.
+if [[ -z "$DRY" ]] && ! python3 "$DIR/pick.py" --prune "$RUNS"; then
+  echo "$(date '+%F %T') skip: prune failed" >> "$RUNS"
+fi
+
 if [[ -n "$DRY" ]]; then
   PLAN=$(python3 "$DIR/pick.py" --plan --dry-run "$RUNS")
 else
@@ -65,7 +70,7 @@ fi
 
 if [[ "$KIND" == resume ]]; then
   echo "$(date '+%F %T') resume $ISSUE session=$SID n=$K" >> "$RUNS"
-  PROMPT="Resumed run $K/2 for $ISSUE ($URL) after an interruption. Follow the linear-deep-research skill's resume rule."
+  PROMPT="Resumed run $K for $ISSUE ($URL) after an interruption. Follow the linear-deep-research skill's resume rule."
   SESSION_ARG="--resume $SID"
 else
   PICKED=$(python3 "$DIR/pick.py" --claim "$RUNS" 2>> "$RUNS")

@@ -32,6 +32,8 @@ import os, sys
 open(os.path.join(os.environ["FAKE"], "pick.calls"), "a").write(" ".join(sys.argv[1:]) + "\\n")
 if sys.argv[1] == "--gate":
     os.execv(sys.executable, [sys.executable, os.environ["REAL_PICK"]] + sys.argv[1:])
+if sys.argv[1] == "--prune":
+    sys.exit(int(os.environ.get("FAKE_PRUNE_EXIT", "0")))
 out = os.environ.get("FAKE_PLAN" if sys.argv[1] == "--plan" else "FAKE_CLAIM", "")
 if out:
     print(out)
@@ -93,6 +95,18 @@ class Dispatcher(unittest.TestCase):
     def research_calls(self):
         return [c for c in self.calls("claude") if "stream-json" not in c]
 
+    def plan_calls(self):
+        return [c for c in self.calls("pick") if c.startswith("--plan")]
+
+    def test_prune_before_plan(self):
+        self.tick()
+        self.assertEqual(self.calls("pick"), [f"--prune {self.runs}", f"--plan {self.runs}"])
+
+    def test_prune_failure_continues(self):
+        self.tick(FAKE_PRUNE_EXIT="1", FAKE_PLAN="new", FAKE_CLAIM="TASK-9 https://l/TASK-9")
+        self.assertIn("skip: prune failed\n", self.runs_log())
+        self.assertEqual(len(self.research_calls()), 1)
+
     def test_outside_hours(self):
         self.tick(FAKE_HOUR="12", FAKE_PLAN="new")
         self.assertIn("skip: outside hours", self.runs_log())
@@ -103,7 +117,8 @@ class Dispatcher(unittest.TestCase):
             self.tick(FAKE_HOUR=hour)
         for hour in ("00", "07", "23"):
             self.tick(FAKE_HOUR=hour)
-        self.assertEqual(len(self.calls("pick")), 2)
+        self.assertEqual(len(self.plan_calls()), 2)
+        self.assertEqual(len(self.calls("pick")), 4)
 
     def test_now_skips_only_hours(self):
         self.tick("--now", FAKE_HOUR="12", FAKE_PLAN="new", FAKE_CLAIM="TASK-1 https://l/TASK-1")
@@ -118,7 +133,7 @@ class Dispatcher(unittest.TestCase):
 
     def test_nothing_to_do_skips_probe(self):
         self.tick()
-        self.assertEqual(self.calls("pick"), [f"--plan {self.runs}"])
+        self.assertEqual(self.plan_calls(), [f"--plan {self.runs}"])
         self.assertEqual(self.calls("claude"), [])
         self.assertIn("skip: nothing to do", self.runs_log())
 
@@ -136,7 +151,7 @@ class Dispatcher(unittest.TestCase):
         [call] = self.research_calls()
         self.assertIn(f"--resume {SID}", call)
         self.assertNotIn("--session-id", call)
-        self.assertIn("Resumed run 2/2 for TASK-8 (https://l/TASK-8) after an interruption. "
+        self.assertIn("Resumed run 2 for TASK-8 (https://l/TASK-8) after an interruption. "
                       "Follow the linear-deep-research skill's resume rule.", call)
         self.assertIn("--model opus --effort xhigh --permission-mode auto --add-dir", call)
         self.assertNotIn("--claim", " ".join(self.calls("pick")))
@@ -174,6 +189,7 @@ class Dispatcher(unittest.TestCase):
     def test_dry_run(self):
         self.tick("--dry-run", FAKE_HOUR="12", FAKE_TMUX_ACTIVE="1", FAKE_PLAN="new", FAKE_CLAIM="TASK-9 https://l/TASK-9")
         self.assertEqual(self.calls("pick")[0], f"--plan --dry-run {self.runs}")
+        self.assertNotIn("--prune", " ".join(self.calls("pick")))
         self.assertNotIn("--claim", " ".join(self.calls("pick")))
         self.assertEqual(self.research_calls(), [])
         self.assertEqual(len(self.calls("claude")), 1)
