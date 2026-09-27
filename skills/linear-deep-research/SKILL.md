@@ -32,10 +32,12 @@ Turns one Deep Research issue into a verified Markdown report pushed to the user
 
 ## Resume rule
 
-A prompt starting "Resumed run" continues this session after an interruption. It is the one exception to steps 5–6; check in order:
+A prompt starting "Resumed run" continues this session after an interruption. It is the one exception to steps 5–6. Never call the Workflow again in a resumed session and never use `resumeFromRunId`: it replays only the unchanged prefix of agent calls, so deep-research re-runs almost everything. Run files live under `~/.claude/projects/<project>/<session id>/`. Check in order:
 
 1. No Workflow call yet in this session → continue from step 5; it is still the single run.
-2. The run's `~/.claude/projects/<project>/<session id>/subagents/workflows/<runId>/journal.jsonl` shows agents that failed on rate_limit, or has no final result → call the Workflow with `resumeFromRunId` once. Judge from the journal only, never `/private/tmp`.
-3. Otherwise → steps 7–8, doing only what is missing: report committed and pushed, link on the issue, hand-off comment, In Review.
+2. `workflows/<runId>.json` exists with `"status": "completed"` → write the report from its `result` (`confirmed`, `refuted`, `unverified`, `sources`, and `summary`/`findings` when present). A summary saying synthesis was skipped or failed only means you merge the confirmed claims yourself while writing the report.
+   - `unverified` claims that matter to the deliverable: re-run only their missing votes, each as one Agent call with the original verifier prompt from that agent's `subagents/workflows/<runId>/agent-<id>.jsonl` (find the agent via `journal.jsonl`: `started` without `result`). Apply the script's rule: 2 of 3 refutes kill a claim. Otherwise list them under Gaps.
+3. No completed `workflows/<runId>.json` (the run was killed mid-way) → take the results that exist from `journal.jsonl` (`result` entries: sources and extracted claims from Fetch, votes from Verify), treat claims with fewer than 2 valid votes as unverified, and write the report from those; list the missing parts under Gaps.
+4. Then steps 7–8, doing only what is missing: report committed and pushed, link on the issue, hand-off comment, In Review.
 
 Never repeat the "research started" comment. Failures left after the resume → publish with Gaps.
