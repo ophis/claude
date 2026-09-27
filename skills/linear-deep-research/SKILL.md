@@ -5,7 +5,7 @@ description: Use when asked to pick up, run, or work on an issue in the Deep Res
 
 # Linear Deep Research
 
-Turns one Deep Research issue into a verified report attached to that issue. Research runs through the built-in `deep-research` Workflow; this skill owns claiming, reporting and board updates.
+Turns one Deep Research issue into a verified report filed under the project and linked from the issue. Research runs through the built-in `deep-research` Workflow; this skill owns claiming, reporting and board updates.
 
 ## Board
 
@@ -15,11 +15,10 @@ Turns one Deep Research issue into a verified report attached to that issue. Res
 
 ## Steps
 
-0. **Recover.** Only one run exists at a time, so an In Progress issue in the project assigned to `me` and not updated for over 2 hours is left over from a run that died. For each: comment that the previous run was interrupted and the issue is back in the queue, set Todo, remove the assignee.
-1. **Pick.** Use the issue the user named. Otherwise take the Todo issue in the project with the highest priority (none = lowest), oldest first. Empty queue → stop.
+1. **Pick.** If the invocation names an issue, use it. Otherwise run `python3 ${CLAUDE_SKILL_DIR}/scripts/pick.py`: it returns issues left by dead runs to Todo, then claims the next Todo issue and prints `<ID> <url>`. No output → queue empty; stop.
 2. **Read** the issue and its comments.
 3. **Too vague?** If the question, scope or deliverable is missing, comment 2–4 numbered questions, move the issue to Backlog, and stop.
-4. **Claim.** Re-read the status right before claiming. Not Todo anymore → another session has it; stop. Otherwise set In Progress, assignee `me`, and comment that research started.
+4. **Claim.** If `pick.py` or the runner already claimed it, only comment that research started. Otherwise re-read the status right before claiming: not Todo anymore → another session has it; stop. Else set In Progress, assignee `me`, and comment that research started.
 5. **Research.** Call the built-in `/deep-research` Workflow exactly once for the whole issue in this invocation. Combine all subquestions, shared context, and any "already known" claims into one self-contained `args` string; phrase existing claims as claims to verify and prioritize the questions most important to the deliverable. Do not launch separate runs for individual parts or additional runs to fill coverage gaps. The workflow verifies only its top-ranked claims, so list uncovered or unverified parts under Gaps.
 6. **Failed or partial run.** Do not automatically retry or launch a replacement research run in this invocation. If the run produces usable findings, including supported refutations, publish the report and list missing or unverified parts under Gaps. If it fails and yields no usable findings, comment the failure, move the issue back to Todo, and stop.
 7. **Report.** `save_document` with `project` `Deep Research` as the only parent (not `issue` too), title `Report: <issue ID> <issue title>`, so all reports list on the project page. Then add the document URL to the issue's links with `save_issue` `links`. Write the report in Chinese; on first mention, follow each proper noun or acronym with its English original in parentheses, e.g. 工作树（git worktree）. Sections:

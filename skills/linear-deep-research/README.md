@@ -3,8 +3,9 @@
 Runs the Deep Research queue on the Linear board (team Frank's Agents, project Deep Research): picks the next Todo issue, runs `/deep-research` once, and files the report under the project with a link on the issue.
 
 - `SKILL.md` — the procedure Claude follows.
-- `scripts/run.sh` — headless runner: `claude -p` in a detached tmux session `linear-research`, one run at a time, logs to `~/.local/state/linear-research/`.
-  - `run.sh` — real run. `run.sh --dry-run` — reports what Recover and Pick would do; read-only.
+- `scripts/pick.py` — recovers issues left by dead runs, then claims the next Todo issue via the Linear API. Needs the agent account's API key in the Keychain: `security add-generic-password -a frank.agent.w -s linear-api-key -w`.
+- `scripts/run.sh` — headless runner: runs `pick.py`, then `claude -p` on the claimed issue in a detached tmux session `linear-research`, one run at a time, logs to `~/.local/state/linear-research/`. Empty queue → no Claude session.
+  - `run.sh` — real run. `run.sh --dry-run` — reports what `pick.py` would recover and pick; changes nothing, starts no Claude.
   - Watch: `tmux attach -t linear-research`. Inspect a finished run: `claude --resume <session-id>`.
 - `review/` — unused draft (reuses one interactive tmux session); not wired into anything.
 
