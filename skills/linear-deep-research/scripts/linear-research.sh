@@ -61,4 +61,4 @@ TRANSCRIPT="$HOME/.claude/projects/$(echo "$STATE/work" | tr '/.' '--')/$SID.jso
 echo "$(date '+%F %T') start $ISSUE session=$SID transcript=$TRANSCRIPT" >> "$STATE/runs.log"
 
 tmux new-session -d -s "$SESSION" -c "$STATE/work" \
-  "claude -p $(printf '%q' "$PROMPT") --session-id $SID --model opus --effort xhigh --permission-mode auto < /dev/null"
+  "claude -p $(printf '%q' "$PROMPT") --session-id $SID --model opus --effort xhigh --permission-mode auto --add-dir $(printf '%q' "$HOME/playground/private_docs") < /dev/null"
