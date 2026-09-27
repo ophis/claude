@@ -70,7 +70,7 @@ fi
 
 if [[ "$KIND" == resume ]]; then
   echo "$(date '+%F %T') resume $ISSUE session=$SID n=$K" >> "$RUNS"
-  PROMPT="Resumed run $K for $ISSUE ($URL) after an interruption. Follow the linear-deep-research skill's resume rule."
+  PROMPT="Resumed run $K for $ISSUE ($URL) after an interruption. Re-read $(dirname "$DIR")/SKILL.md first (it may have changed since this session started) and follow its resume rule."
   SESSION_ARG="--resume $SID"
 else
   PICKED=$(python3 "$DIR/pick.py" --claim "$RUNS" 2>> "$RUNS")

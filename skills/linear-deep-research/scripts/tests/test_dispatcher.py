@@ -152,7 +152,8 @@ class Dispatcher(unittest.TestCase):
         self.assertIn(f"--resume {SID}", call)
         self.assertNotIn("--session-id", call)
         self.assertIn("Resumed run 2 for TASK-8 (https://l/TASK-8) after an interruption. "
-                      "Follow the linear-deep-research skill's resume rule.", call)
+                      f"Re-read {self.home}/SKILL.md first (it may have changed since this session started) "
+                      "and follow its resume rule.", call)
         self.assertIn("--model opus --effort xhigh --permission-mode auto --add-dir", call)
         self.assertNotIn("--claim", " ".join(self.calls("pick")))
 
