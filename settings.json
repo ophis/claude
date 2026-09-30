@@ -1,4 +1,5 @@
 {
+  "cleanupPeriodDays": 36500,
   "env": {
     "CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION": "2000"
   },
@@ -72,7 +73,7 @@
       "effortLevel": "high"
     },
     "claude-opus-5-5": {
-      "effortLevel": "medium"
+      "effortLevel": "xhigh"
     }
   },
   "tui": "fullscreen",
@@ -82,6 +83,7 @@
   },
   "skipWorkflowUsageWarning": true,
   "theme": "auto",
+  "autoContinueAtUsageLimit": true,
   "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
   "voiceEnabled": false

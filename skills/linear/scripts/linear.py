@@ -18,13 +18,15 @@ fragment T on __Type { kind name ofType { kind name ofType { kind name ofType { 
 
 
 def api_key():
-    if os.environ.get("LINEAR_API_KEY"):
+    service = os.environ.get("LINEAR_KEYCHAIN_SERVICE")
+    if not service and os.environ.get("LINEAR_API_KEY"):
         return os.environ["LINEAR_API_KEY"]
+    service = service or "linear-api-key"
     account = os.environ.get("LINEAR_KEYCHAIN_ACCOUNT")
-    r = subprocess.run(["security", "find-generic-password", "-s", "linear-api-key", "-w"]
+    r = subprocess.run(["security", "find-generic-password", "-s", service, "-w"]
                        + (["-a", account] if account else []), capture_output=True, text=True)
     if r.returncode:
-        raise SystemExit(f"no Linear API key: set LINEAR_API_KEY or add a Keychain item (see {os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/README.md)")
+        raise SystemExit(f"no Linear API key in Keychain service {service}: see {os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/README.md")
     return r.stdout.strip()
 
 

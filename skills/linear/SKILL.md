@@ -11,7 +11,7 @@ description: Linear via its GraphQL API. Use for any Linear operation instead of
 linear.py 'QUERY' ['{"var": "value"}']
 ```
 - QUERY may be `@file.graphql` or `-` (stdin). Prints the response `data` as JSON; GraphQL errors go to stderr, exit 1.
-- API key: `$LINEAR_API_KEY`, else the macOS Keychain item with service `linear-api-key` (account `$LINEAR_KEYCHAIN_ACCOUNT` if set). Never print it. Setup: [README.md](README.md).
+- API key: the macOS Keychain item with service `$LINEAR_KEYCHAIN_SERVICE` if set (no fallback); else `$LINEAR_API_KEY`; else service `linear-api-key`. Account `$LINEAR_KEYCHAIN_ACCOUNT` if set. Never print it. Setup: [README.md](README.md).
 - Pass text (comment bodies, descriptions) as variables, never inlined in the query.
 
 ## Introspect before querying — never guess a field

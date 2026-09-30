@@ -1,0 +1,1 @@
+{"https://github.com/ophis/agent-pm/pull/5":{"number":5,"title":"Simplify prune: force-delete finished issues' worktrees","state":"MERGED","checks":{"passed":0,"failed":0,"pending":0},"review":"REVIEW_REQUIRED","additions":205,"deletions":830}}
