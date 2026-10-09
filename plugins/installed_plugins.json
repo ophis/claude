@@ -14,21 +14,41 @@
     "autopilot@claude-autopilot": [
       {
         "scope": "user",
-        "installPath": "/Users/francis/.claude/plugins/cache/claude-autopilot/autopilot/0.11.0",
-        "version": "0.11.0",
+        "installPath": "/Users/francis/.claude/plugins/cache/claude-autopilot/autopilot/0.12.6",
+        "version": "0.12.6",
         "installedAt": "2026-06-08T01:10:53.251Z",
-        "lastUpdated": "2026-09-29T04:44:13.320Z",
-        "gitCommitSha": "6b466772c39d05f247dbef545f8f2ce88ac5ea1f"
+        "lastUpdated": "2026-10-08T02:53:37.358Z",
+        "gitCommitSha": "ac19120242856022fdb989432894d1657b9a0878"
       }
     ],
-    "mattpocock-skills@claude-plugins-official": [
+    "visual-explainer@visual-explainer-marketplace": [
       {
         "scope": "user",
-        "installPath": "/Users/francis/.claude/plugins/cache/claude-plugins-official/mattpocock-skills/1.2.3",
-        "version": "1.2.3",
-        "installedAt": "2026-09-18T14:37:07.773Z",
-        "lastUpdated": "2026-09-18T14:37:07.773Z",
-        "gitCommitSha": "959a8e9f1edc3adbe2f7e3054bb6fbefa6696260"
+        "installPath": "/Users/francis/.claude/plugins/cache/visual-explainer-marketplace/visual-explainer/0.12.0",
+        "version": "0.12.0",
+        "installedAt": "2026-10-03T05:13:35.449Z",
+        "lastUpdated": "2026-10-03T05:13:35.449Z",
+        "gitCommitSha": "5846f5aef34a23c8fea389d2f23ce56224cbf840"
+      }
+    ],
+    "agent-pm@agent-pm": [
+      {
+        "scope": "user",
+        "installPath": "/Users/francis/.claude/plugins/cache/agent-pm/agent-pm/0.1.14",
+        "version": "0.1.14",
+        "installedAt": "2026-10-07T04:45:55.273Z",
+        "lastUpdated": "2026-10-09T17:46:51.800Z",
+        "gitCommitSha": "4158d62c67063f38f1d8023903b4027d78f7f25c"
+      }
+    ],
+    "mattpocock-skills@mattpocock": [
+      {
+        "scope": "user",
+        "installPath": "/Users/francis/.claude/plugins/cache/mattpocock/mattpocock-skills/1.3.1",
+        "version": "1.3.1",
+        "installedAt": "2026-10-08T03:25:00.674Z",
+        "lastUpdated": "2026-10-08T03:25:00.674Z",
+        "gitCommitSha": "f3fc5632f401156837ee3872f14fe33ccf1024ea"
       }
     ]
   }

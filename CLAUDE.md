@@ -1,8 +1,22 @@
-# CLAUDE.md — user-level preferences
+# CLAUDE.md: user-level preferences
 
-- **Language:** Reply in whatever language the user writes in. Code, comments, commit messages, and file contents stay in English.
-- **Minimal necessary principle:** Output only what's necessary — get it minimal the first time so nothing needs trimming after. Applies to every output: responses, docs, code, comments. Cut filler, restatement, hedging, rationale, "X not Y" framing, and examples a rule already implies; keep load-bearing detail (a guard, a gotcha, a functional requirement). Specifics: default to no code comments (add one only for a pitfall/gotcha/non-obvious reason, ≤3 lines); docs say it once, direct instructions. Unsure a line earns its place → drop it.
-- **Responses (hard rule):** Never verbose. Lead with the result; no preamble, recap. Default to a few lines.
-- **Large data via files:** When a command can produce bulky output (transcripts, logs, dumps, query results), redirect to a temp file and `grep`/`Read` it on demand — never pipe it into context. Applies to any tool, not just one skill.
-- **Default email:** When the user says "发到我的邮箱" / "send to my email" without naming an address, send to **ophis.w@gmail.com**.
-- **Skill/plugin path resolution:** In a SKILL.md, reference bundled files with `${CLAUDE_SKILL_DIR}` (the dir holding SKILL.md), e.g. `python3 ${CLAUDE_SKILL_DIR}/scripts/x.py` — never absolute or `~` paths, so it resolves at any install level. For plugins: `${CLAUDE_PLUGIN_ROOT}` = the install dir for bundled read-only files, but it **changes on every update — never write state there**; `${CLAUDE_PLUGIN_DATA}` (= `~/.claude/plugins/data/{id}/`, auto-created on first use) = the **persistent writable** dir that survives updates — put installed deps/venvs, caches, and generated files there. Inside a bundled script, derive its own paths from `__file__`, not hardcoded.
+- **Language:** Conversation in the user's language; once they set one, keep it for the session even if they write in another. All work output in English. Keep proper nouns and technical terms in their original language.
+- **Minimal:** Write tersely, minimal the first time, in every output. Cut filler, restatement, hedging, rationale and implied examples; keep guards, gotchas and requirements. No code comments unless a gotcha (≤3 lines). No em dashes. Prefer a table or diagram to prose. Unsure a line earns its place → drop it.
+- **Say each thing once:** One home per rule or fact; elsewhere point to it. Before finishing a doc, skill, prompt or config edit, check it and its neighbours for restatement.
+- **Responses (hard rule):** Terse; result first; reports: verdict, then only decision-changing findings.
+- **Acronyms:** Expand on first mention in each reply.
+- **Emailed reports:** Final content only, no version notes.
+- **A question is not approval:** Answer, then wait for a go-ahead before changing state.
+- **User-run experiments:** Report observations only.
+- **Existing tools first:** Check what the user's software already does before researching others.
+- **User config:** Never write it (`~/.claude.json`, `~/.claude/settings*.json`, dotfiles) without permission; tell sub-agents too.
+- **Deletes:** `rm` only literal paths or `${VAR:?}`.
+- **Merge back and push:** Merge into local `main`, push `main`; never push a branch to `origin/main`.
+- **No mutation testing:** Never put a known-wrong value into shipped code to force a branch.
+- **Reviews:** Size the panel to the change (config none, small code light, feature full); one fix per round; failing reviewers re-review by continuation. Review sub-agents write only in their own `mktemp -d`, disclose other writes, clean up.
+- **Autopilot docs:** In the repo's design-doc dir, else `docs/.autopilot/`.
+- **Cite exactly:** Name the skill (`/plugin:skill`), file path or command, never a paraphrase.
+- **Docs before experiments:** Official docs, then source; a live test only if neither answers, saying why.
+- **Large output via files:** Redirect to a temp file, then grep/Read it.
+- **Default email:** ophis.w@gmail.com.
+- **Skill/plugin paths:** Bundled files via `${CLAUDE_SKILL_DIR}` / `${CLAUDE_PLUGIN_ROOT}` (read-only, changes per update); state in `${CLAUDE_PLUGIN_DATA}`; scripts find their paths from `__file__`.
